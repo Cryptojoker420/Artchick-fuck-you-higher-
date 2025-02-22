@@ -1,0 +1,492 @@
+​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artchicks: Fuck You! Higher!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        /* Basic page styling */
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        /* Game area: graveyard scene */
+   #gameArea {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    margin: 20px auto;
+    background: linear-gradient(to bottom, #000, #222);
+    border: 2px solid #fff;
+    overflow: hidden; /* Ensures nothing overflows */
+}
+
+        /* Ground texture - subtle gradient */
+        #ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, #222, #333);
+            z-index: 1;
+        }
+
+        /* Moving fog - reduced opacity for clarity */
+        #fog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
+            animation: moveFog 20s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes moveFog {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Player: shooter with chick.png - shape-based glow */
+        #player {
+            position: absolute;
+            bottom: 10px;
+            left: 362.5px; /* Centered for 75px width: (800 - 75) / 2 */
+            width: 75px;
+            height: 75px;
+            background-image: url('images/chick.png');
+            background-size: cover;
+            filter: drop-shadow(0 0 5px #0f0); /* Green glow following the image shape */
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Base enemy style - dynamic size */
+        .enemy {
+            position: absolute;
+            background-size: cover;
+            transition: top 0.1s linear;
+            z-index: 5;
+            animation: bob 2s ease-in-out infinite;
+        }
+
+        /* Specific enemy sizes */
+        .enemy.kim {
+            width: 85px;
+            height: 80px;
+        }
+
+        .enemy.grifters {
+            width: 65px;
+            height: 10px;
+        }
+
+.enemy.raj {
+    width: 75px;
+    height: 75px;
+}
+
+.enemy.korean {
+    width: 85px;
+    height: 80px;
+    z-index: 6;
+    filter: drop-shadow(0 0 5px #ff0); /* Reduce glow size */
+}
+
+        .enemy.Fud1 {
+            width: 75px;
+            height: 20px;
+        }
+
+        .enemy.vcs2 {
+            width: 75px;
+            height: 24px;
+        }
+
+        .enemy.default {
+            width: 50px;
+            height: 50px;
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Ghosts: shape-based glow */
+        .ghost {
+            filter: drop-shadow(0 0 5px rgba(170,170,255,0.7)); /* Blue glow following the image shape */
+        }
+
+        /* Zombies: shape-based glow */
+        .zombie {
+            filter: drop-shadow(0 0 5px #f90); /* Orange glow following the image shape */
+        }
+
+        /* Red heels - using an image, updated size */
+        .heel {
+            position: absolute;
+            width: 25px; /* Updated to 25px */
+            height: 20px; /* Updated to 20px */
+            background-image: url('images/red_heel.png');
+            background-size: cover;
+            z-index: 10;
+        }
+
+        /* Gravestones: textured stone with RIP */
+        .gravestone {
+            position: absolute;
+            bottom: 0;
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(135deg, #555 25%, #444 25%, #444 50%, #555 50%, #555 75%, #444 75%);
+            border-radius: 20px 20px 0 0;
+            box-shadow: 5px 5px 10px #000;
+            color: #222;
+            text-align: center;
+            line-height: 60px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        /* Health bar container */
+        #health-bar {
+            width: 200px;
+            height: 20px;
+            border: 2px solid #fff;
+            position: relative;
+            margin: 10px auto;
+            background-color: #333;
+        }
+
+        /* Health level indicator */
+        #health-level {
+            width: 100%;
+            height: 100%;
+            background-color: #0f0; /* Green */
+            transition: width 0.5s;
+        }
+
+        /* Game over message */
+        #game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            color: red;
+            z-index: 100;
+        }
+
+        /* Updated Quote styling with fun font and glow effect */
+        .quote {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 15px; /* Slightly smaller font size */
+            font-family: 'Fredoka One', sans-serif; /* Playful font */
+            text-align: center;
+            z-index: 15;
+            pointer-events: none;
+            width: 80%; /* Handle long quotes */
+            max-width: 600px; /* Prevent excessive stretching */
+        }
+    </style>
+</head>
+<body>
+    <h1>Artchicks: Fuck You! Higher!</h1>
+    <p>Wave: <span id="wave">1</span> | Score: <span id="score">0</span></p>
+    <div id="health-bar">
+        <div id="health-level"></div>
+    </div>
+    <div id="gameArea">
+        <div id="ground"></div>
+        <div id="fog"></div>
+        <div id="player"></div>
+        <div id="game-over">Game Over</div>
+    </div>
+    <script>
+        // Game Setup
+        const gameArea = document.getElementById('gameArea');
+        const player = document.getElementById('player');
+        let playerX = 362.5; // Starting X position (centered for 75px width)
+        const playerSpeed = 10; // Movement speed
+        let enemies = []; // Array to track all enemies
+        let gravestones = []; // Array to track gravestones
+        let score = 0; // Player's score
+        let wave = 1; // Current wave
+        let defeatedEnemies = 0; // Count defeated enemies for wave progression
+        const enemySpawnInterval = 2000; // Spawn enemies every 2 seconds
+
+        // Health and game state
+        let shooterHealth = 100;
+        const maxHealth = 100;
+        let isGameOver = false;
+
+        // Funny quotes array
+        const funnyQuotes = [
+            "Got More Swag In My Pinky Finger Than Your Whole Influencer Cabal",
+            "Fuck You",
+            "Shit Paid KOL",
+            "Fuck You, Higher"
+        ];
+
+        // Update health bar
+        function updateHealthBar() {
+            const healthLevel = document.getElementById('health-level');
+            healthLevel.style.width = (shooterHealth / maxHealth * 100) + '%';
+            if (shooterHealth <= 0) {
+                healthLevel.style.width = '0%';
+            }
+        }
+        updateHealthBar(); // Initial call
+
+        // Display random quote for 1 second
+        function displayQuote(x, y) {
+    const quote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
+    const quoteDiv = document.createElement('div');
+    quoteDiv.className = 'quote';
+    quoteDiv.innerText = quote;
+    quoteDiv.style.left = x + 'px'; // Set the x position
+    quoteDiv.style.top = y + 'px';  // Set the y position
+    gameArea.appendChild(quoteDiv);
+    setTimeout(() => {
+        if (quoteDiv.parentNode) {
+            gameArea.removeChild(quoteDiv);
+        }
+    }, 1000);
+}
+
+        // Player Movement
+        document.addEventListener('keydown', (event) => {
+            if (isGameOver) return;
+            if (event.key === 'a' || event.key === 'ArrowLeft') {
+                playerX -= playerSpeed;
+            } else if (event.key === 'd' || event.key === 'ArrowRight') {
+                playerX += playerSpeed;
+            }
+            if (playerX < 0) playerX = 0;
+            if (playerX > 725) playerX = 725; // 800 - 75 (player width)
+            player.style.left = playerX + 'px';
+        });
+
+        document.addEventListener('mousedown', (event) => {
+    if (isGameOver) return;
+    const heel = document.createElement('div');
+    heel.className = 'heel';
+    heel.style.left = (playerX + 27.5) + 'px';
+    heel.style.bottom = '75px';
+    gameArea.appendChild(heel);
+
+    const heelInterval = setInterval(() => {
+        let heelY = parseInt(heel.style.bottom) || 0;
+        heelY += 10;
+        heel.style.bottom = heelY + 'px';
+
+        if (heelY > 600) {
+            clearInterval(heelInterval);
+            gameArea.removeChild(heel);
+            return;
+        }
+
+        enemies.forEach((enemy, index) => {
+            const computedStyle = getComputedStyle(enemy);
+            const enemyWidth = parseInt(computedStyle.width);
+            const enemyHeight = parseInt(computedStyle.height);
+            const enemyX = parseInt(enemy.style.left) || 0;
+            const enemyY = parseInt(enemy.style.top) || 0;
+            const heelX = parseInt(heel.style.left) || 0;
+            const heelBottom = parseInt(heel.style.bottom) || 0;
+            const heelY = 600 - heelBottom;
+
+            if (
+                heelX >= enemyX &&
+                heelX <= enemyX + enemyWidth &&
+                heelY >= enemyY &&
+                heelY <= enemyY + enemyHeight
+            ) {
+                enemy.health -= 1;
+                if (enemy.health <= 0) {
+                    // Calculate the center of the enemy
+                    const enemyCenterX = enemyX + enemyWidth / 2;
+                    const enemyCenterY = enemyY + enemyHeight / 2;
+                    gameArea.removeChild(enemy);
+                    enemies.splice(index, 1);
+                    score += 1;
+                    document.getElementById('score').innerText = score;
+                    defeatedEnemies += 1;
+                    displayQuote(enemyCenterX, enemyCenterY); // Pass center coordinates
+
+                    if (defeatedEnemies % 10 === 0) {
+                        wave += 1;
+                        document.getElementById('wave').innerText = wave;
+                        if (wave % 5 === 0) {
+                            spawnMiniBoss();
+                        }
+                    }
+                }
+                clearInterval(heelInterval);
+                gameArea.removeChild(heel);
+            }
+        });
+    }, 50);
+});
+
+        // Enemy Creation with PNGs and Dynamic Sizes
+        function createEnemy() {
+            if (isGameOver) return;
+            const enemy = document.createElement('div');
+            enemy.className = 'enemy';
+            const isGhost = Math.random() < 0.5;
+            const images = [
+    'images/korean.png',
+    'images/paidkol.png',
+    'images/solcoin.png',
+    'images/wanted.png',
+    'images/Fud1.png',
+    'images/Vcs2.png',
+    'images/kim.png',
+    'images/grifters.png',
+    'images/raj.png' // New enemy added
+];
+            const randomImage = images[Math.floor(Math.random() * images.length)];
+
+            if (isGhost) {
+                enemy.classList.add('ghost');
+                enemy.speed = 5;
+                enemy.health = 1;
+            } else {
+                enemy.classList.add('zombie');
+                enemy.speed = 2;
+                enemy.health = 3;
+            }
+            enemy.style.backgroundImage = `url(${randomImage})`;
+            
+            // Set size based on image name
+            if (randomImage === 'images/kim.png') {
+                enemy.classList.add('kim');
+                enemy.style.left = Math.random() * 740 + 'px'; // 800 - 60
+            } else if (randomImage === 'images/grifters.png') {
+                enemy.classList.add('grifters');
+                enemy.style.left = Math.random() * 735 + 'px'; // 800 - 65
+            } else if (randomImage === 'images/Fud1.png') {
+                enemy.classList.add('Fud1');
+                enemy.style.left = Math.random() * 750 + 'px'; // 800 - 50
+            } else if (randomImage === 'images/Vcs2.png') {
+                enemy.classList.add('vcs2');
+                enemy.style.left = Math.random() * 755 + 'px'; // 800 - 75
+            } else {
+                enemy.classList.add('default');
+                enemy.style.left = Math.random() * 750 + 'px'; // 800 - 50
+            }
+if (randomImage === 'images/korean.png') {
+    enemy.classList.add('korean');
+    enemy.style.left = Math.floor(Math.random() * (790 - 85)) + 'px'; // Ensures full visibility
+}
+if (randomImage === 'images/raj.png') {
+    enemy.classList.add('raj');
+    enemy.style.left = Math.floor(Math.random() * (796 - 75)) + 'px';
+}
+            enemy.style.top = '0px';
+            gameArea.appendChild(enemy);
+            enemies.push(enemy);
+        }
+
+        // Enemy Spawn Interval
+        const enemySpawnIntervalId = setInterval(createEnemy, enemySpawnInterval);
+
+        // Enemy Movement and Collision with Player
+        const enemyMovementIntervalId = setInterval(() => {
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const enemy = enemies[i];
+                let enemyY = parseInt(enemy.style.top) || 0;
+                enemyY += enemy.speed;
+                enemy.style.top = enemyY + 'px';
+
+                const computedStyle = getComputedStyle(enemy);
+                const enemyWidth = parseInt(computedStyle.width);
+                const enemyHeight = parseInt(computedStyle.height);
+                const enemyLeft = parseInt(enemy.style.left) || 0;
+                const enemyRight = enemyLeft + enemyWidth;
+                const enemyTop = enemyY;
+                const enemyBottom = enemyY + enemyHeight;
+
+                // Player's bounding box
+                const playerLeft = playerX;
+                const playerRight = playerX + 75;
+                const playerTop = 525; // 600 - 75 (bottom 10px)
+                const playerBottom = 600 - 10;
+
+                // Check for collision with player
+                if (!isGameOver &&
+                    enemyRight > playerLeft &&
+                    enemyLeft < playerRight &&
+                    enemyBottom > playerTop &&
+                    enemyTop < playerBottom
+                ) {
+                    shooterHealth -= 10;
+                    updateHealthBar();
+                    if (shooterHealth <= 0) {
+                        isGameOver = true;
+                        document.getElementById('game-over').style.display = 'block';
+                        clearInterval(enemySpawnIntervalId);
+                        clearInterval(enemyMovementIntervalId);
+                    }
+                    enemies.splice(i, 1);
+                    gameArea.removeChild(enemy);
+                } else if (enemyY > (600 - enemyHeight)) {
+                    enemies.splice(i, 1);
+                    gameArea.removeChild(enemy);
+                }
+            }
+        }, 100);
+
+        // Gravestones
+        function createGravestone() {
+            const stone = document.createElement('div');
+            stone.className = 'gravestone';
+            stone.style.left = Math.random() * 760 + 'px';
+            stone.innerText = 'RIP';
+            gameArea.appendChild(stone);
+            gravestones.push(stone);
+        }
+
+        for (let i = 0; i < 3; i++) {
+            createGravestone();
+        }
+
+        // Mini-Boss
+        function spawnMiniBoss() {
+            if (isGameOver) return;
+            const boss = document.createElement('div');
+            boss.className = 'enemy';
+            boss.style.width = '60px';
+            boss.style.height = '60px';
+            boss.style.backgroundColor = '#f0f';
+            boss.style.borderRadius = '50%';
+            boss.health = 10;
+            boss.speed = 3;
+            boss.style.left = '370px';
+            boss.style.top = '0px';
+            gameArea.appendChild(boss);
+            enemies.push(boss);
+        }
+    </script>
+</body>
+</html>
+​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
