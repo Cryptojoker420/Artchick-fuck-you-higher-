@@ -1,4 +1,7 @@
-​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<!DOCTYPE html>
+Here’s the complete, corrected `index.html` code for your game "Artchicks: Fuck You! Higher!" You can copy and paste this directly into your GitHub repository to replace the existing `index.html`. This version fixes the file paths for your PNGs (since they’re all at the top level of your repository, not in an `images/` folder) and simplifies the background to a solid black color, as you requested. Once uploaded, your game should work at `https://cryptojoker420.github.io/Artchick-fuck-you-higher-/`, and others will be able to play it online!
+
+```html
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,43 +17,15 @@
             text-align: center;
         }
 
-        /* Game area: graveyard scene */
-   #gameArea {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    margin: 20px auto;
-    background: linear-gradient(to bottom, #000, #222);
-    border: 2px solid #fff;
-    overflow: hidden; /* Ensures nothing overflows */
-}
-
-        /* Ground texture - subtle gradient */
-        #ground {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, #222, #333);
-            z-index: 1;
-        }
-
-        /* Moving fog - reduced opacity for clarity */
-        #fog {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="rgba(255,255,255,0.03)"/></svg>') repeat;
-            animation: moveFog 20s linear infinite;
-            z-index: 2;
-        }
-
-        @keyframes moveFog {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        /* Game area: solid black background */
+        #gameArea {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            background-color: #000; /* Solid black background */
+            border: 2px solid #fff;
+            overflow: hidden;
         }
 
         /* Player: shooter with chick.png - shape-based glow */
@@ -60,7 +35,7 @@
             left: 362.5px; /* Centered for 75px width: (800 - 75) / 2 */
             width: 75px;
             height: 75px;
-            background-image: url('images/chick.png');
+            background-image: url('chick.png');
             background-size: cover;
             filter: drop-shadow(0 0 5px #0f0); /* Green glow following the image shape */
             animation: pulse 2s infinite;
@@ -92,17 +67,17 @@
             height: 10px;
         }
 
-.enemy.raj {
-    width: 75px;
-    height: 75px;
-}
+        .enemy.raj {
+            width: 75px;
+            height: 75px;
+        }
 
-.enemy.korean {
-    width: 85px;
-    height: 80px;
-    z-index: 6;
-    filter: drop-shadow(0 0 5px #ff0); /* Reduce glow size */
-}
+        .enemy.korean {
+            width: 85px;
+            height: 80px;
+            z-index: 6;
+            filter: drop-shadow(0 0 5px #ff0); /* Reduce glow size */
+        }
 
         .enemy.Fud1 {
             width: 75px;
@@ -139,7 +114,7 @@
             position: absolute;
             width: 25px; /* Updated to 25px */
             height: 20px; /* Updated to 20px */
-            background-image: url('images/red_heel.png');
+            background-image: url('red_heel.png');
             background-size: cover;
             z-index: 10;
         }
@@ -215,8 +190,6 @@
         <div id="health-level"></div>
     </div>
     <div id="gameArea">
-        <div id="ground"></div>
-        <div id="fog"></div>
         <div id="player"></div>
         <div id="game-over">Game Over</div>
     </div>
@@ -258,19 +231,19 @@
 
         // Display random quote for 1 second
         function displayQuote(x, y) {
-    const quote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
-    const quoteDiv = document.createElement('div');
-    quoteDiv.className = 'quote';
-    quoteDiv.innerText = quote;
-    quoteDiv.style.left = x + 'px'; // Set the x position
-    quoteDiv.style.top = y + 'px';  // Set the y position
-    gameArea.appendChild(quoteDiv);
-    setTimeout(() => {
-        if (quoteDiv.parentNode) {
-            gameArea.removeChild(quoteDiv);
+            const quote = funnyQuotes[Math.floor(Math.random() * funnyQuotes.length)];
+            const quoteDiv = document.createElement('div');
+            quoteDiv.className = 'quote';
+            quoteDiv.innerText = quote;
+            quoteDiv.style.left = x + 'px'; // Set the x position
+            quoteDiv.style.top = y + 'px';  // Set the y position
+            gameArea.appendChild(quoteDiv);
+            setTimeout(() => {
+                if (quoteDiv.parentNode) {
+                    gameArea.removeChild(quoteDiv);
+                }
+            }, 1000);
         }
-    }, 1000);
-}
 
         // Player Movement
         document.addEventListener('keydown', (event) => {
@@ -286,66 +259,66 @@
         });
 
         document.addEventListener('mousedown', (event) => {
-    if (isGameOver) return;
-    const heel = document.createElement('div');
-    heel.className = 'heel';
-    heel.style.left = (playerX + 27.5) + 'px';
-    heel.style.bottom = '75px';
-    gameArea.appendChild(heel);
+            if (isGameOver) return;
+            const heel = document.createElement('div');
+            heel.className = 'heel';
+            heel.style.left = (playerX + 27.5) + 'px';
+            heel.style.bottom = '75px';
+            gameArea.appendChild(heel);
 
-    const heelInterval = setInterval(() => {
-        let heelY = parseInt(heel.style.bottom) || 0;
-        heelY += 10;
-        heel.style.bottom = heelY + 'px';
+            const heelInterval = setInterval(() => {
+                let heelY = parseInt(heel.style.bottom) || 0;
+                heelY += 10;
+                heel.style.bottom = heelY + 'px';
 
-        if (heelY > 600) {
-            clearInterval(heelInterval);
-            gameArea.removeChild(heel);
-            return;
-        }
-
-        enemies.forEach((enemy, index) => {
-            const computedStyle = getComputedStyle(enemy);
-            const enemyWidth = parseInt(computedStyle.width);
-            const enemyHeight = parseInt(computedStyle.height);
-            const enemyX = parseInt(enemy.style.left) || 0;
-            const enemyY = parseInt(enemy.style.top) || 0;
-            const heelX = parseInt(heel.style.left) || 0;
-            const heelBottom = parseInt(heel.style.bottom) || 0;
-            const heelY = 600 - heelBottom;
-
-            if (
-                heelX >= enemyX &&
-                heelX <= enemyX + enemyWidth &&
-                heelY >= enemyY &&
-                heelY <= enemyY + enemyHeight
-            ) {
-                enemy.health -= 1;
-                if (enemy.health <= 0) {
-                    // Calculate the center of the enemy
-                    const enemyCenterX = enemyX + enemyWidth / 2;
-                    const enemyCenterY = enemyY + enemyHeight / 2;
-                    gameArea.removeChild(enemy);
-                    enemies.splice(index, 1);
-                    score += 1;
-                    document.getElementById('score').innerText = score;
-                    defeatedEnemies += 1;
-                    displayQuote(enemyCenterX, enemyCenterY); // Pass center coordinates
-
-                    if (defeatedEnemies % 10 === 0) {
-                        wave += 1;
-                        document.getElementById('wave').innerText = wave;
-                        if (wave % 5 === 0) {
-                            spawnMiniBoss();
-                        }
-                    }
+                if (heelY > 600) {
+                    clearInterval(heelInterval);
+                    gameArea.removeChild(heel);
+                    return;
                 }
-                clearInterval(heelInterval);
-                gameArea.removeChild(heel);
-            }
+
+                enemies.forEach((enemy, index) => {
+                    const computedStyle = getComputedStyle(enemy);
+                    const enemyWidth = parseInt(computedStyle.width);
+                    const enemyHeight = parseInt(computedStyle.height);
+                    const enemyX = parseInt(enemy.style.left) || 0;
+                    const enemyY = parseInt(enemy.style.top) || 0;
+                    const heelX = parseInt(heel.style.left) || 0;
+                    const heelBottom = parseInt(heel.style.bottom) || 0;
+                    const heelY = 600 - heelBottom;
+
+                    if (
+                        heelX >= enemyX &&
+                        heelX <= enemyX + enemyWidth &&
+                        heelY >= enemyY &&
+                        heelY <= enemyY + enemyHeight
+                    ) {
+                        enemy.health -= 1;
+                        if (enemy.health <= 0) {
+                            // Calculate the center of the enemy
+                            const enemyCenterX = enemyX + enemyWidth / 2;
+                            const enemyCenterY = enemyY + enemyHeight / 2;
+                            gameArea.removeChild(enemy);
+                            enemies.splice(index, 1);
+                            score += 1;
+                            document.getElementById('score').innerText = score;
+                            defeatedEnemies += 1;
+                            displayQuote(enemyCenterX, enemyCenterY); // Pass center coordinates
+
+                            if (defeatedEnemies % 10 === 0) {
+                                wave += 1;
+                                document.getElementById('wave').innerText = wave;
+                                if (wave % 5 === 0) {
+                                    spawnMiniBoss();
+                                }
+                            }
+                        }
+                        clearInterval(heelInterval);
+                        gameArea.removeChild(heel);
+                    }
+                });
+            }, 50);
         });
-    }, 50);
-});
 
         // Enemy Creation with PNGs and Dynamic Sizes
         function createEnemy() {
@@ -354,16 +327,16 @@
             enemy.className = 'enemy';
             const isGhost = Math.random() < 0.5;
             const images = [
-    'images/korean.png',
-    'images/paidkol.png',
-    'images/solcoin.png',
-    'images/wanted.png',
-    'images/Fud1.png',
-    'images/Vcs2.png',
-    'images/kim.png',
-    'images/grifters.png',
-    'images/raj.png' // New enemy added
-];
+                'korean.png',
+                'paidkol.png',
+                'solcoin.png',
+                'wanted.png',
+                'Fud1.png',
+                'Vcs2.png',
+                'kim.png',
+                'grifters.png',
+                'raj.png'
+            ];
             const randomImage = images[Math.floor(Math.random() * images.length)];
 
             if (isGhost) {
@@ -378,30 +351,30 @@
             enemy.style.backgroundImage = `url(${randomImage})`;
             
             // Set size based on image name
-            if (randomImage === 'images/kim.png') {
+            if (randomImage === 'kim.png') {
                 enemy.classList.add('kim');
                 enemy.style.left = Math.random() * 740 + 'px'; // 800 - 60
-            } else if (randomImage === 'images/grifters.png') {
+            } else if (randomImage === 'grifters.png') {
                 enemy.classList.add('grifters');
                 enemy.style.left = Math.random() * 735 + 'px'; // 800 - 65
-            } else if (randomImage === 'images/Fud1.png') {
+            } else if (randomImage === 'Fud1.png') {
                 enemy.classList.add('Fud1');
                 enemy.style.left = Math.random() * 750 + 'px'; // 800 - 50
-            } else if (randomImage === 'images/Vcs2.png') {
+            } else if (randomImage === 'Vcs2.png') {
                 enemy.classList.add('vcs2');
                 enemy.style.left = Math.random() * 755 + 'px'; // 800 - 75
             } else {
                 enemy.classList.add('default');
                 enemy.style.left = Math.random() * 750 + 'px'; // 800 - 50
             }
-if (randomImage === 'images/korean.png') {
-    enemy.classList.add('korean');
-    enemy.style.left = Math.floor(Math.random() * (790 - 85)) + 'px'; // Ensures full visibility
-}
-if (randomImage === 'images/raj.png') {
-    enemy.classList.add('raj');
-    enemy.style.left = Math.floor(Math.random() * (796 - 75)) + 'px';
-}
+            if (randomImage === 'korean.png') {
+                enemy.classList.add('korean');
+                enemy.style.left = Math.floor(Math.random() * (790 - 85)) + 'px'; // Ensures full visibility
+            }
+            if (randomImage === 'raj.png') {
+                enemy.classList.add('raj');
+                enemy.style.left = Math.floor(Math.random() * (796 - 75)) + 'px';
+            }
             enemy.style.top = '0px';
             gameArea.appendChild(enemy);
             enemies.push(enemy);
@@ -489,4 +462,3 @@ if (randomImage === 'images/raj.png') {
     </script>
 </body>
 </html>
-​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​
